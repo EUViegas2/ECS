@@ -35,7 +35,15 @@ public:
 	sf::Clock				m_deltaClock;
 	int						m_score{ 0 };
 	int						m_currentFrame{ 0 };
-	Game(const std::string& config){}
+
+	bool					m_paused{ false };
+	bool					m_running{ true };
+
+
+	std::shared_ptr<Entity> m_player;
+
+
+	Game(const std::string& config);
 
 	void init(const std::string& path);
 	void run();
@@ -43,6 +51,8 @@ public:
 	void spawnPlayer();
 	void spawnEnemy();
 	void spawnSmallEnemies(std::shared_ptr<Entity> e);
+	void spawnBullet(std::shared_ptr<Entity> entity, const Vec2& target);
+	void spawnSpecialWeapon(std::shared_ptr<Entity> entity);
 	void sEnemySpawner();
 	void sCollision();
 	void sUserInput();

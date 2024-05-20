@@ -22,14 +22,17 @@ void Game::run()
 
 	while (m_running)
 	{
-		m_entities.update();
-		sEnemySpawner();
-		sCollision();
+		while (!m_paused)
+		{
+			m_entities.update();
+			sEnemySpawner();
+			sCollision();
+			sLifespan();
+			sMovement();
+			m_currentFrame++;
+		}
 		sUserInput();
-		sRender();
-
-
-		m_currentFrame++;
+		sRender();	
 	}
 }
 
@@ -57,6 +60,14 @@ void Game::spawnSmallEnemies(std::shared_ptr<Entity> e)
 {
 
 
+}
+
+void Game::spawnBullet(std::shared_ptr<Entity> entity, const Vec2& target)
+{
+}
+
+void Game::spawnSpecialWeapon(std::shared_ptr<Entity> entity)
+{
 }
 
 void Game::sEnemySpawner()
