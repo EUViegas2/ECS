@@ -8,6 +8,8 @@
 struct PlayerConfig { int SR, CR, FR, FG, FB, OR, OG, OB, OT, V; float S; };
 struct EnemyConfig { int SR, CR, OR, OG, OB, OT, VMIN, VMAX, L, SI; float SMIN, SMAX; };
 struct BulletConfig { int SR, CR, FR, FG, FB, OR, OG, OB, OT, V, L; float S; };
+struct WindowConfig { int W, H, FL, FS; };
+struct FontConfig { std::string F; int S, R, G, B; };
 /*
 SR
 CR
@@ -32,6 +34,8 @@ public:
 	PlayerConfig			m_playerConfig;
 	EnemyConfig				m_enemyConfig;
 	BulletConfig			m_bulletConfig;
+	WindowConfig			m_windowConfig;
+	FontConfig				m_fontConfig;
 	sf::Clock				m_deltaClock;
 	int						m_score{ 0 };
 	int						m_currentFrame{ 0 };
