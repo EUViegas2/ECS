@@ -11,18 +11,19 @@ struct BulletConfig { int SR, CR, FR, FG, FB, OR, OG, OB, OT, V, L; float S; };
 struct WindowConfig { int W, H, FL, FS; };
 struct FontConfig { std::string F; int S, R, G, B; };
 /*
-SR
-CR
-FR
+SR Shape Radius
+CR Colision Radius
+FR 
 FG
-FB
+FB Fill Colors RGB
 OR
 OG
-OB
-OT
-V
-L
-
+OB Outline Colors RGB
+OT Outline Thickness
+V Vertices / Vmin VMAX vertices
+L LifeSpan
+S Speed / Smin SMAX speeds
+SI Spawn Interval
 */
 class Game
 {
