@@ -165,20 +165,16 @@ void Game::sUserInput()
 		{
 			switch (event.key.code)
 			{
-			case sf::Keyboard::W:
-				m_player->cInput->up = true;
+			case sf::Keyboard::W: m_player->cInput->up = true;
 				break;
 
-			case sf::Keyboard::A:
-				m_player->cInput->left = true;
+			case sf::Keyboard::A: m_player->cInput->left = true;
 				break;
 
-			case sf::Keyboard::S:
-				m_player->cInput->down = true;
+			case sf::Keyboard::S: m_player->cInput->down = true;
 				break;
 
-			case sf::Keyboard::D:
-				m_player->cInput->right = true;
+			case sf::Keyboard::D: m_player->cInput->right = true;
 				break;
 
 			default:
@@ -189,20 +185,16 @@ void Game::sUserInput()
 		{
 			switch (event.key.code)
 			{
-			case sf::Keyboard::W:
-				m_player->cInput->up = false;
+			case sf::Keyboard::W: m_player->cInput->up = false;
 				break;
 
-			case sf::Keyboard::A:
-				m_player->cInput->left = false;
+			case sf::Keyboard::A: m_player->cInput->left = false;
 				break;
 
-			case sf::Keyboard::S:
-				m_player->cInput->down = false;
+			case sf::Keyboard::S: m_player->cInput->down = false;
 				break;
 
-			case sf::Keyboard::D:
-				m_player->cInput->right = false;
+			case sf::Keyboard::D: m_player->cInput->right = false;
 				break;
 			default:
 				break;
