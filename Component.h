@@ -67,6 +67,7 @@ public:
 	bool right	{ false };
 	bool down	{ false };
 	bool shoot	{ false };
+	bool pause	{ false };
 
 	cInput() {}
 };

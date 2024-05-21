@@ -223,12 +223,22 @@ void Game::sMovement()
 	m_player->cTransform->vel = Vec2(0.0f, 0.0f);
 	float speed = 10.0f;
 	sf::Vector2u win = m_window.getSize();
-	if (m_player->cInput->up) { m_player->cTransform->vel.y -= m_playerConfig.S; }
-	if (m_player->cInput->down) { m_player->cTransform->vel.y += m_playerConfig.S; }
-	if (m_player->cInput->left) { m_player->cTransform->vel.x -= m_playerConfig.S; }
-	if (m_player->cInput->right) { m_player->cTransform->vel.x += m_playerConfig.S; }
+
+	if (m_player->cInput->up)
+	{ m_player->cTransform->vel.y -= m_playerConfig.S; }
+
+	if (m_player->cInput->down)
+	{ m_player->cTransform->vel.y += m_playerConfig.S; }
+
+	if (m_player->cInput->left)
+	{ m_player->cTransform->vel.x -= m_playerConfig.S; }
+
+	if (m_player->cInput->right)
+	{ m_player->cTransform->vel.x += m_playerConfig.S; }
+
 	if (m_player->cTransform->vel.x != 0 && m_player->cTransform->vel.y != 0)
 		m_player->cTransform->vel.setLength(m_playerConfig.S);
+
 	for (auto& e : m_entities.getEntities())
 	{
 		e->cTransform->pos += e->cTransform->vel;
