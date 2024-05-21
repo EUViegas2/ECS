@@ -87,7 +87,7 @@ void Game::run()
 
 	while (m_running)
 	{
-		while (!m_paused)
+		if (!m_paused)
 		{
 			m_entities.update();
 			sEnemySpawner();
@@ -117,6 +117,13 @@ void Game::spawnPlayer()
 
 void Game::spawnEnemy()
 {
+	auto entity = m_entities.addEntity("enemy");
+
+	float ex = rand() % m_window.getSize().x;
+	float ey = rand() % m_window.getSize().y;
+	entity->cTransform = std::make_shared<cTransform>(Vec2(ex, ey), Vec2(0.f, 0.f), 0.f);
+
+	entity->cShape = std::make_shared<cShape>(16.f, 3, sf::Color(0, 0, 255), sf::Color(255, 255, 255), 4.f);
 
 	m_lastEnemySpawnTime = m_currentFrame;
 }
@@ -137,6 +144,7 @@ void Game::spawnSpecialWeapon(std::shared_ptr<Entity> entity)
 
 void Game::sEnemySpawner()
 {
+	spawnEnemy();
 }
 
 void Game::sCollision()
@@ -145,15 +153,94 @@ void Game::sCollision()
 
 void Game::sUserInput()
 {
+
+
+	sf::Event event;
+	while (m_window.pollEvent(event))
+	{
+		if (event.type == sf::Event::Closed)
+			m_running = false;
+
+		if (event.type == sf::Event::KeyPressed)
+		{
+			switch (event.key.code)
+			{
+			case sf::Keyboard::W:
+				m_player->cInput->up = true;
+				break;
+
+			case sf::Keyboard::A:
+				m_player->cInput->left = true;
+				break;
+
+			case sf::Keyboard::S:
+				m_player->cInput->down = true;
+				break;
+
+			case sf::Keyboard::D:
+				m_player->cInput->right = true;
+				break;
+
+			default:
+				break;
+			}
+		}
+		if (event.type == sf::Event::KeyReleased)
+		{
+			switch (event.key.code)
+			{
+			case sf::Keyboard::W:
+				m_player->cInput->up = false;
+				break;
+
+			case sf::Keyboard::A:
+				m_player->cInput->left = false;
+				break;
+
+			case sf::Keyboard::S:
+				m_player->cInput->down = false;
+				break;
+
+			case sf::Keyboard::D:
+				m_player->cInput->right = false;
+				break;
+			default:
+				break;
+			}
+		}
+	}
 }
 
 void Game::sRender()
 {
+	m_window.clear();
+	
+	for (auto e : m_entities.getEntities())
+	{
+		m_window.draw(e->cShape->circle);
+		e->cShape->circle.setPosition(e->cTransform->pos.x, e->cTransform->pos.y);
+
+		e->cTransform->angle += 1.f;
+		e->cShape->circle.setRotation(e->cTransform->angle);
+	}
+	m_window.display();
 }
 
 void Game::sMovement()
 {
-	m_player->c
+	m_player->cTransform->vel = Vec2(0.0f, 0.0f);
+	float speed = 10.0f;
+	sf::Vector2u win = m_window.getSize();
+	if (m_player->cInput->up) { m_player->cTransform->vel.y -= m_playerConfig.S; }
+	if (m_player->cInput->down) { m_player->cTransform->vel.y += m_playerConfig.S; }
+	if (m_player->cInput->left) { m_player->cTransform->vel.x -= m_playerConfig.S; }
+	if (m_player->cInput->right) { m_player->cTransform->vel.x += m_playerConfig.S; }
+	if (m_player->cTransform->vel.x != 0 && m_player->cTransform->vel.y != 0)
+		m_player->cTransform->vel.setLength(m_playerConfig.S);
+	for (auto& e : m_entities.getEntities())
+	{
+		e->cTransform->pos += e->cTransform->vel;
+	}
 }
 
 void Game::sLifespan()

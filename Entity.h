@@ -30,6 +30,4 @@ public:
 	const std::string& tag() const;
 	const size_t id() const;
 	void destroy();
-
-	Entity(){}
 };

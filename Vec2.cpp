@@ -70,9 +70,25 @@ Vec2 Vec2::operator*=(const float val)
 	return *this;
 }
 
-float Vec2::dist(const Vec2& rhs) const
+float Vec2::dist2(const Vec2& rhs) const { return (x - rhs.x) * (x - rhs.x) + (y - rhs.y) * (y - rhs.y); }
+float Vec2::dist(const Vec2& rhs) const { return sqrtf(dist2(rhs)); }
+
+void Vec2::normalize()
 {
-	float dx = x + rhs.x;
-	float dy = y + rhs.y;
-	return sqrt(dx * dx + dy * dy);
+	float normal = dist(Vec2(0.0f, 0.0f));
+	if (normal == 0) { x = 0; y = 0; }
+	else { x /= normal; y /= normal; }
+}
+
+Vec2 Vec2::unitVec() const
+{
+	float length = dist(Vec2(0.0f, 0.0f));
+	return length == 0 ? Vec2(0, 0) : Vec2(x / length, y / length);
+}
+
+void Vec2::setLength(const float norm)
+{
+	normalize();
+	x *= norm;
+	y *= norm;
 }

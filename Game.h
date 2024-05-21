@@ -27,7 +27,6 @@ SI Spawn Interval
 */
 class Game
 {
-public:
 	sf::RenderWindow		m_window;	//the window to be drawn
 	EntityManager			m_entities;	//vector of entities to maintain
 	sf::Font				m_font;		//the font to use
@@ -38,26 +37,21 @@ public:
 	WindowConfig			m_windowConfig;
 	FontConfig				m_fontConfig;
 	sf::Clock				m_deltaClock;
-	int						m_score{ 0 };
-	int						m_currentFrame{ 0 };
+	int						m_score				{ 0 };
+	int						m_currentFrame		{ 0 };
+	int						m_lastEnemySpawnTime{ 0 };
 
-	bool					m_paused{ false };
-	bool					m_running{ true };
+	bool					m_paused			{ false };
+	bool					m_running			{ true };
 
 
 	std::shared_ptr<Entity> m_player;
 
 
-	Game(const std::string& config);
 
 	void init(const std::string& path);
-	void run();
 	void setPaused(bool paused);
-	void spawnPlayer();
-	void spawnEnemy();
-	void spawnSmallEnemies(std::shared_ptr<Entity> e);
-	void spawnBullet(std::shared_ptr<Entity> entity, const Vec2& target);
-	void spawnSpecialWeapon(std::shared_ptr<Entity> entity);
+
 	void sEnemySpawner();
 	void sCollision();
 	void sUserInput();
@@ -65,5 +59,16 @@ public:
 	void sMovement();
 	void sLifespan();
 
+	void spawnPlayer();
+	void spawnEnemy();
+	void spawnSmallEnemies(std::shared_ptr<Entity> e);
+	void spawnBullet(std::shared_ptr<Entity> entity, const Vec2& target);
+	void spawnSpecialWeapon(std::shared_ptr<Entity> entity);
+
+public:
+
+	Game(const std::string& config);
+
+	void run();
 };
 

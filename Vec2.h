@@ -28,6 +28,10 @@ public:
 	Vec2 operator /= (const float val);
 	Vec2 operator *= (const float val);
 
-	float dist(const Vec2& rhs) const;	
+	float dist2(const Vec2& rhs) const;
+	float dist(const Vec2& rhs) const;
+	Vec2 unitVec() const;
+	void normalize();
+	void setLength(const float norm);
 };
 

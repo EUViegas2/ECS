@@ -7,9 +7,9 @@
 class cTransform
 {
 public:
-	Vec2	pos		=	{ 0,0 };
-	Vec2	vel		=	{ 0,0 };
-	float	angle		{ 0 };
+	Vec2	pos		=	{ 0.,0. };
+	Vec2	vel		=	{ 0.,0. };
+	float	angle		{ 0. };
 	cTransform(){}
 	cTransform(const Vec2& p, const Vec2& v, float a)
 		: pos(p), vel(v), angle(a) {}
@@ -22,7 +22,8 @@ class cShape
 public:
 	sf::CircleShape		circle;
 
-	cShape(float radius, int points, const sf::Color& fill, const sf::Color& outline, float thickness) 
+	cShape(float radius, int points, const sf::Color& fill, 
+		   const sf::Color& outline, float thickness) 
 		: circle(radius, points)
 	{
 		circle.setFillColor(fill);
