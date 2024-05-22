@@ -13,7 +13,7 @@ class EntityManager
 	EntityVec	m_entitiesToAdd;
 	EntityMap	m_entityMap;
 	size_t		m_totalEntities = 0;
-
+	size_t vecsize = m_entities.size();
 	void removeDeadEntities(EntityVec& vec);
 
 public:

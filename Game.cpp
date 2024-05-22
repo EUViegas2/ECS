@@ -1,5 +1,6 @@
 #include "Game.h"
 #include<fstream>
+#include<iostream>
 
 Game::Game(const std::string& config)
 {
@@ -72,10 +73,6 @@ void Game::init(const std::string& path)
 				>> m_bulletConfig.L;	// Small Lifespan   
 		}
 	}
-
-
-	
-
 	m_window.create(sf::VideoMode(m_windowConfig.W, m_windowConfig.H), "Assignment 2");
 	m_window.setFramerateLimit(m_windowConfig.FL);
 
@@ -112,6 +109,7 @@ void Game::spawnPlayer()
 	entity->cTransform = std::make_shared<cTransform>(Vec2(200.f, 200.f), Vec2(1.f, 1.f), 0.f);
 	entity->cShape = std::make_shared<cShape>(32.f, 8, sf::Color(10, 10, 10), sf::Color(255, 0, 0), 4.f);
 	entity->cInput = std::make_shared<cInput>();
+	entity->cCollision = std::make_shared<cCollision>(m_playerConfig.CR);
 	m_player = entity;
 }
 
@@ -136,8 +134,11 @@ void Game::spawnEnemy()
 			sf::Color(m_enemyConfig.OR, m_enemyConfig.OG, m_enemyConfig.OB),
 			m_enemyConfig.OT);
 
+		entity->cCollision = std::make_shared<cCollision>(m_enemyConfig.CR);
 		m_lastEnemySpawnTime = m_currentFrame;
 	}
+
+	std::cout << m_entities.getEntities().size() << std::endl;
 }
 
 void Game::spawnSmallEnemies(std::shared_ptr<Entity> e)
@@ -190,6 +191,17 @@ void Game::sEnemySpawner()
 
 void Game::sCollision()
 {
+	
+	for(auto b : m_entities.getEntities("bullet"))
+		for (auto e : m_entities.getEntities("enemy"))
+		{
+			if (b->cTransform->pos.dist(e->cTransform->pos) < b->cCollision->radius + e->cCollision->radius)
+			{
+				b->destroy();
+				e->destroy();
+			}
+
+		}
 }
 
 void Game::sUserInput()
