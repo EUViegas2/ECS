@@ -136,6 +136,31 @@ void Game::spawnSmallEnemies(std::shared_ptr<Entity> e)
 
 void Game::spawnBullet(std::shared_ptr<Entity> entity, const Vec2& target)
 {
+	if (m_currentFrame - m_lastBulletSpawnTime > 5)
+	{
+		Vec2 velocity = target - entity->cTransform->pos;
+		velocity /= entity->cTransform->pos.dist(target);
+		velocity *= m_bulletConfig.S;
+
+		auto e = m_entities.addEntity("bullet");
+		e->cShape = std::make_shared<cShape>
+			(
+			m_bulletConfig.SR,
+			m_bulletConfig.V,
+			sf::Color(m_bulletConfig.FR, m_bulletConfig.FG, m_bulletConfig.FB),
+			sf::Color(m_bulletConfig.OR, m_bulletConfig.OG, m_bulletConfig.OB),
+			m_bulletConfig.OT
+			);
+
+		e->cTransform = std::make_shared<cTransform>
+			(entity->cTransform->pos, velocity, 0);
+		e->cLifespan = std::make_shared<cLifespan>
+			(m_bulletConfig.L);
+		e->cCollision = std::make_shared<cCollision>
+			(m_bulletConfig.CR);
+
+		m_lastBulletSpawnTime = m_currentFrame;
+	}
 }
 
 void Game::spawnSpecialWeapon(std::shared_ptr<Entity> entity)
@@ -144,7 +169,11 @@ void Game::spawnSpecialWeapon(std::shared_ptr<Entity> entity)
 
 void Game::sEnemySpawner()
 {
-	spawnEnemy();
+	if (m_currentFrame - m_lastEnemySpawnTime > m_enemyConfig.SI)
+	{
+		spawnEnemy();
+		m_lastEnemySpawnTime = m_currentFrame;
+	}
 }
 
 void Game::sCollision()
@@ -177,6 +206,12 @@ void Game::sUserInput()
 			case sf::Keyboard::D: m_player->cInput->right = true;
 				break;
 
+			case sf::Keyboard::P: m_paused = !m_paused;
+				break;
+
+			case sf::Keyboard::Space: spawnSpecialWeapon(m_player);
+				break;
+
 			default:
 				break;
 			}
@@ -196,9 +231,16 @@ void Game::sUserInput()
 
 			case sf::Keyboard::D: m_player->cInput->right = false;
 				break;
+
 			default:
 				break;
 			}
+		}
+
+		if (event.type == sf::Event::MouseButtonPressed)
+		{
+			if (event.mouseButton.button == sf::Mouse::Left)
+				spawnBullet(m_player, Vec2(event.mouseButton.x, event.mouseButton.y));
 		}
 	}
 }

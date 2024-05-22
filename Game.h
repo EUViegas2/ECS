@@ -37,12 +37,14 @@ class Game
 	WindowConfig			m_windowConfig;
 	FontConfig				m_fontConfig;
 	sf::Clock				m_deltaClock;
-	int						m_score				{ 0 };
-	int						m_currentFrame		{ 0 };
-	int						m_lastEnemySpawnTime{ 0 };
 
-	bool					m_paused			{ false };
-	bool					m_running			{ true };
+	int						m_score					{ 0 };
+	int						m_currentFrame			{ 0 };
+	int						m_lastEnemySpawnTime	{ 0 };
+	int						m_lastBulletSpawnTime	{ 0 };
+
+	bool					m_paused				{ false };
+	bool					m_running				{ true };
 
 
 	std::shared_ptr<Entity> m_player;

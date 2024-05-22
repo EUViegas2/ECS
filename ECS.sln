@@ -5,6 +5,11 @@ VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ECS", "ECS.vcxproj", "{802E7A3D-05E0-4746-B665-8B6054EC5294}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F2102433-8CB5-49DE-A50E-C1368C6B34AE}"
+	ProjectSection(SolutionItems) = preProject
+		Config.txt = Config.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
