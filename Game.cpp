@@ -117,15 +117,27 @@ void Game::spawnPlayer()
 
 void Game::spawnEnemy()
 {
-	auto entity = m_entities.addEntity("enemy");
+	if(m_currentFrame > m_lastEnemySpawnTime + 6)
+	{
+		int speed = rand() % (int)(m_enemyConfig.SMAX - m_enemyConfig.SMIN) + m_enemyConfig.SMIN;
+		auto entity = m_entities.addEntity("enemy");
 
-	float ex = rand() % m_window.getSize().x;
-	float ey = rand() % m_window.getSize().y;
-	entity->cTransform = std::make_shared<cTransform>(Vec2(ex, ey), Vec2(0.f, 0.f), 0.f);
+		float ex = rand() % (m_window.getSize().x - 2 * m_enemyConfig.SR) + m_enemyConfig.SR;
+		float ey = rand() % (m_window.getSize().y - 2 * m_enemyConfig.SR) + m_enemyConfig.SR;
+		entity->cTransform = std::make_shared<cTransform>(
+			Vec2(ex, ey),
+			Vec2(cosf((rand() % 1000) / 500.0f * 3.14159f), sinf((rand() % 1000) / 500.0f * 3.14159f)) * speed ,
+			0.f);
 
-	entity->cShape = std::make_shared<cShape>(16.f, 3, sf::Color(0, 0, 255), sf::Color(255, 255, 255), 4.f);
+		entity->cShape = std::make_shared<cShape>(
+			m_enemyConfig.SR,
+			(rand()%(m_enemyConfig.VMAX - m_enemyConfig.VMIN)+m_enemyConfig.VMIN),
+			sf::Color(rand() % 255, rand() % 255, rand() % 255),
+			sf::Color(m_enemyConfig.OR, m_enemyConfig.OG, m_enemyConfig.OB),
+			m_enemyConfig.OT);
 
-	m_lastEnemySpawnTime = m_currentFrame;
+		m_lastEnemySpawnTime = m_currentFrame;
+	}
 }
 
 void Game::spawnSmallEnemies(std::shared_ptr<Entity> e)
@@ -251,11 +263,12 @@ void Game::sRender()
 	
 	for (auto e : m_entities.getEntities())
 	{
-		m_window.draw(e->cShape->circle);
+		
 		e->cShape->circle.setPosition(e->cTransform->pos.x, e->cTransform->pos.y);
 
 		e->cTransform->angle += 1.f;
 		e->cShape->circle.setRotation(e->cTransform->angle);
+		m_window.draw(e->cShape->circle);
 	}
 	m_window.display();
 }
