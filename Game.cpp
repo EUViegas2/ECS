@@ -95,6 +95,8 @@ void Game::run()
 		}
 		sUserInput();
 		sRender();	
+		if (m_sWeaponActive)
+			spawnSpecialWeapon();
 	}
 }
 void Game::setPaused(bool paused)
@@ -133,6 +135,8 @@ void Game::spawnEnemy()
 			m_enemyConfig.OT);
 
 		entity->cCollision = std::make_shared<cCollision>(m_enemyConfig.CR);
+		if (m_sWeaponActive)
+			entity->cTransform->vel *= 0;
 		m_lastEnemySpawnTime = m_currentFrame;
 	}
 
@@ -169,10 +173,31 @@ void Game::spawnBullet(std::shared_ptr<Entity> entity, const Vec2& target)
 			(m_bulletConfig.CR);
 
 		m_lastBulletSpawnTime = m_currentFrame;
+		
 	}
 }
 void Game::spawnSpecialWeapon()
 {
+	
+	if (!m_sWeaponActive)
+	{
+		m_weaponCounter = m_currentFrame;
+		m_sWeaponActive = true;
+	}
+	else
+	{
+		for (auto e : m_entities.getEntities("enemy"))
+		{
+			e->cTransform->vel *= 0;
+
+			if (m_currentFrame == m_weaponCounter + 20)
+			{
+				int speed = rand() % (int)(m_enemyConfig.SMAX - m_enemyConfig.SMIN) + m_enemyConfig.SMIN;
+				e->cTransform->vel = Vec2(cosf((rand() % 1000) / 500.0f * 3.14159f), sinf((rand() % 1000) / 500.0f * 3.14159f)) * speed;
+				m_sWeaponActive = false;
+			}
+		}
+	}
 }
 void Game::sEnemySpawner()
 {
