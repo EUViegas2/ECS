@@ -226,6 +226,14 @@ void Game::sCollision()
 				e->destroy();
 			}
 		}
+
+		//enemy-player
+		if (m_player->cTransform->pos.dist(e->cTransform->pos) < (m_player->cCollision->radius + e->cCollision->radius))
+		{
+			m_player->destroy();
+			e->destroy();
+			spawnPlayer();
+		}
 	}
 
 	//std::cout << m_entities.getEntities().size() << std::endl;
