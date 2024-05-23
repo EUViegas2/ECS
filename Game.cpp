@@ -171,7 +171,7 @@ void Game::spawnBullet(std::shared_ptr<Entity> entity, const Vec2& target)
 		m_lastBulletSpawnTime = m_currentFrame;
 	}
 }
-void Game::spawnSpecialWeapon(std::shared_ptr<Entity> entity)
+void Game::spawnSpecialWeapon()
 {
 }
 void Game::sEnemySpawner()
@@ -278,7 +278,7 @@ void Game::sUserInput()
 			case sf::Keyboard::P: m_paused = !m_paused;
 				break;
 
-			case sf::Keyboard::Space: spawnSpecialWeapon(m_player);
+			case sf::Keyboard::Space: spawnSpecialWeapon();
 				break;
 
 			default:
