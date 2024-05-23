@@ -196,19 +196,26 @@ void Game::sCollision()
 		m_player->cTransform->pos.y = m_window.getSize().y - m_player->cCollision->radius;
 
 	//enemy - bounds collision
+	std::cout << "This is befor forloop \0";
 	for (auto& e : m_entities.getEntities("enemy"))
 	{
-		if ((e->cTransform->pos.x < e->cCollision->radius
-			&& e->cTransform->vel.x < 0)
-			|| (e->cTransform->pos.x > m_window.getSize().x - e->cCollision->radius
-			&& e->cTransform->vel.x > 0))
+		std::cout << "this is the forloop" << std::endl;
+		if (
+			(e->cTransform->pos.x < e->cCollision->radius && e->cTransform->vel.x < 0) ||
+			(e->cTransform->pos.x > m_window.getSize().x - e->cCollision->radius && e->cTransform->vel.x > 0)
+			)
+		{
+			std::cout << "this is the 1st if \0";
 			e->cTransform->vel.x *= -1;
+		}
 
-		if ((e->cTransform->pos.y < e->cCollision->radius
-			&& e->cTransform->vel.y < 0)
-			|| (e->cTransform->pos.y > m_window.getSize().y - e->cCollision->radius
-			&& e->cTransform->vel.y > 0))
+		if (
+			(e->cTransform->pos.y < e->cCollision->radius && e->cTransform->vel.y < 0) ||
+			(e->cTransform->pos.y > m_window.getSize().y - e->cCollision->radius && e->cTransform->vel.y > 0)
+			)
+		{
 			e->cTransform->vel.y *= -1;
+		}
 
 		//enemy-bullet
 		for(auto& b: m_entities.getEntities("bullet"))
