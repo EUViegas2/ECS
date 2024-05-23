@@ -97,11 +97,9 @@ void Game::run()
 		sRender();	
 	}
 }
-
 void Game::setPaused(bool paused)
 {
 }
-
 void Game::spawnPlayer()
 {
 	auto entity = m_entities.addEntity("player");
@@ -111,8 +109,8 @@ void Game::spawnPlayer()
 	entity->cInput = std::make_shared<cInput>();
 	entity->cCollision = std::make_shared<cCollision>(m_playerConfig.CR);
 	m_player = entity;
+	//std::cout << m_entities.getEntities().size() << std::endl;
 }
-
 void Game::spawnEnemy()
 {
 	if(m_currentFrame > m_lastEnemySpawnTime + 6)
@@ -140,13 +138,11 @@ void Game::spawnEnemy()
 
 	std::cout << m_entities.getEntities().size() << std::endl;
 }
-
 void Game::spawnSmallEnemies(std::shared_ptr<Entity> e)
 {
 
 
 }
-
 void Game::spawnBullet(std::shared_ptr<Entity> entity, const Vec2& target)
 {
 	if (m_currentFrame - m_lastBulletSpawnTime > 5)
@@ -175,11 +171,9 @@ void Game::spawnBullet(std::shared_ptr<Entity> entity, const Vec2& target)
 		m_lastBulletSpawnTime = m_currentFrame;
 	}
 }
-
 void Game::spawnSpecialWeapon(std::shared_ptr<Entity> entity)
 {
 }
-
 void Game::sEnemySpawner()
 {
 	if (m_currentFrame - m_lastEnemySpawnTime > m_enemyConfig.SI)
@@ -191,17 +185,53 @@ void Game::sEnemySpawner()
 
 void Game::sCollision()
 {
-	
-	for(auto b : m_entities.getEntities("bullet"))
-		for (auto e : m_entities.getEntities("enemy"))
+	//Player - bounds collision
+	if (m_player->cTransform->pos.x < m_player->cCollision->radius)
+		m_player->cTransform->pos.x = m_player->cCollision->radius;
+	if (m_player->cTransform->pos.y < m_player->cCollision->radius)
+		m_player->cTransform->pos.y = m_player->cCollision->radius;
+	if (m_player->cTransform->pos.x > m_window.getSize().x - m_player->cCollision->radius)
+		m_player->cTransform->pos.x = m_window.getSize().x - m_player->cCollision->radius;
+	if (m_player->cTransform->pos.y > m_window.getSize().y - m_player->cCollision->radius)
+		m_player->cTransform->pos.y = m_window.getSize().y - m_player->cCollision->radius;
+
+	//enemy - bounds collision
+	for (auto& e : m_entities.getEntities("enemy"))
+	{
+		if ((e->cTransform->pos.x < e->cCollision->radius
+			&& e->cTransform->vel.x < 0)
+			|| (e->cTransform->pos.x > m_window.getSize().x - e->cCollision->radius
+			&& e->cTransform->vel.x > 0))
+			e->cTransform->vel.x *= -1;
+
+		if ((e->cTransform->pos.y < e->cCollision->radius
+			&& e->cTransform->vel.y < 0)
+			|| (e->cTransform->pos.y > m_window.getSize().y - e->cCollision->radius
+			&& e->cTransform->vel.y > 0))
+			e->cTransform->vel.y *= -1;
+
+		//enemy-bullet
+		for(auto& b: m_entities.getEntities("bullet"))
 		{
-			if (b->cTransform->pos.dist(e->cTransform->pos) < b->cCollision->radius + e->cCollision->radius)
+			if (b->cTransform->pos.dist(e->cTransform->pos) < (b->cCollision->radius + e->cCollision->radius))
 			{
 				b->destroy();
 				e->destroy();
 			}
-
 		}
+	}
+
+	//std::cout << m_entities.getEntities().size() << std::endl;
+	//for(auto b : m_entities.getEntities("bullet"))
+	//	for (auto e : m_entities.getEntities("enemy"))
+	//	{
+	//		if (b->cTransform->pos.dist(e->cTransform->pos) < (b->cCollision->radius + e->cCollision->radius))
+	//		{
+	//			b->destroy();
+	//			e->destroy();
+	//		}
+
+	//	}
 }
 
 void Game::sUserInput()
@@ -314,5 +344,24 @@ void Game::sMovement()
 
 void Game::sLifespan()
 {
+	// TODO: implement all lifespan functionality
+	//
+	// for all entities
+	for (auto& e : m_entities.getEntities())
+	{
+		if (!e->cLifespan) continue;
+		if (e->cLifespan->remaining > 0) { e->cLifespan->remaining -= 1; }
+		else { e->destroy(); }
+
+		if (e->isActive())
+		{
+			sf::Color col = e->cShape->circle.getFillColor();
+			int alpha = 255 * e->cLifespan->remaining / e->cLifespan->total;
+			e->cShape->circle.setFillColor(sf::Color(col.r, col.g, col.b, alpha));
+		}
+
+	}
+	//	   if it has lifespan and its time is up
+	//		  destroy the entity
 }
 

@@ -7,9 +7,9 @@
 class cTransform
 {
 public:
-	Vec2	pos		=	{ 0.,0. };
-	Vec2	vel		=	{ 0.,0. };
-	float	angle		{ 0. };
+	Vec2	pos		=	{ 0.f,0.f };
+	Vec2	vel		=	{ 0.f,0.f };
+	float	angle		{ 0.f };
 	cTransform(){}
 	cTransform(const Vec2& p, const Vec2& v, float a)
 		: pos(p), vel(v), angle(a) {}
