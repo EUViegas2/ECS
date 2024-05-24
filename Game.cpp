@@ -224,7 +224,6 @@ void Game::sEnemySpawner()
 		m_lastEnemySpawnTime = m_currentFrame;
 	}
 }
-
 void Game::sCollision()
 {
 	//Player - bounds collision
@@ -271,7 +270,7 @@ void Game::sCollision()
 		//enemy-player
 		if (m_player->cTransform->pos.dist(e->cTransform->pos) < (m_player->cCollision->radius + e->cCollision->radius))
 		{
-			
+			m_highScore = m_score;
 			m_score = 0;
 			m_player->destroy();
 			e->destroy();
@@ -280,14 +279,16 @@ void Game::sCollision()
 
 		for (auto e : m_entities.getEntities("small"))
 		{
+			// player - small
 			if (m_player->cTransform->pos.dist(e->cTransform->pos) < (m_player->cCollision->radius + e->cCollision->radius))
 			{
+				m_highScore = m_score;
 				m_score = 0;
 				m_player->destroy();
 				e->destroy();
 				spawnPlayer();
 			}
-
+			// bullet-small
 			for (auto& b : m_entities.getEntities("bullet"))
 			{
 				if (b->cTransform->pos.dist(e->cTransform->pos) < (b->cCollision->radius + e->cCollision->radius))
@@ -301,7 +302,6 @@ void Game::sCollision()
 		}
 	}
 }
-
 void Game::sUserInput()
 {
 
@@ -366,7 +366,6 @@ void Game::sUserInput()
 		}
 	}
 }
-
 void Game::sRender()
 {
 	m_window.clear();
@@ -382,7 +381,6 @@ void Game::sRender()
 	}
 	m_window.display();
 }
-
 void Game::sMovement()
 {
 	m_player->cTransform->vel = Vec2(0.0f, 0.0f);
@@ -412,7 +410,6 @@ void Game::sMovement()
 			e->cTransform->pos += e->cTransform->vel;
 	}
 }
-
 void Game::sLifespan()
 {
 	// TODO: implement all lifespan functionality

@@ -39,6 +39,7 @@ class Game
 	sf::Clock				m_deltaClock;
 
 	int						m_score					{ 0 };
+	int						m_highScore				{ 0 };
 	int						m_currentFrame			{ 0 };
 	int						m_lastEnemySpawnTime	{ 0 };
 	int						m_lastBulletSpawnTime	{ 0 };
