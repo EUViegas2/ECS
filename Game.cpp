@@ -146,8 +146,23 @@ void Game::spawnEnemy()
 }
 void Game::spawnSmallEnemies(std::shared_ptr<Entity> e)
 {
+	int vertices = e->cShape->circle.getPointCount();
+	int radius = e->cShape->circle.getRadius();
+	sf::Color fill = e->cShape->circle.getFillColor();
+	sf::Color outline = e->cShape->circle.getOutlineColor();
+	float thickness = e->cShape->circle.getOutlineThickness();
+	Vec2 pos = e->cTransform->pos;
 
+	for (int i = 0; i < vertices; i++)
+	{
+		float ang = i * 2 * 3.14159f / vertices;
+		Vec2 vel = Vec2(cosf(ang), sinf(ang)) * e->cTransform->vel.dist(Vec2(0.0f, 0.0f));
 
+		auto smallEnemy = m_entities.addEntity("small");
+		smallEnemy->cTransform = std::make_shared<cTransform>(pos, vel, 0);
+		smallEnemy->cShape = std::make_shared<cShape>(radius / 2, vertices, fill, outline, thickness / 2);
+		smallEnemy->cCollision = std::make_shared<cCollision>(radius / 2);
+	}
 }
 void Game::spawnBullet(std::shared_ptr<Entity> entity, const Vec2& target)
 {
@@ -241,6 +256,7 @@ void Game::sCollision()
 			{
 				b->destroy();
 				e->destroy();
+				spawnSmallEnemies(e);
 			}
 		}
 
