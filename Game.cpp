@@ -117,7 +117,7 @@ void Game::spawnPlayer()
 }
 void Game::spawnEnemy()
 {
-	if(m_currentFrame > m_lastEnemySpawnTime + 6)
+	if(m_currentFrame > m_lastEnemySpawnTime + 5)
 	{
 		int speed = rand() % (int)(m_enemyConfig.SMAX - m_enemyConfig.SMIN) + m_enemyConfig.SMIN;
 		auto entity = m_entities.addEntity("enemy");
@@ -137,8 +137,11 @@ void Game::spawnEnemy()
 			m_enemyConfig.OT);
 
 		entity->cCollision = std::make_shared<cCollision>(m_enemyConfig.CR);
+		//entity->cLifespan = std::make_shared<cLifespan>(m_enemyConfig.L*2);
+
 		if (m_sWeaponActive)
 			entity->cTransform->vel *= 0;
+
 		m_lastEnemySpawnTime = m_currentFrame;
 	}
 
@@ -162,6 +165,7 @@ void Game::spawnSmallEnemies(std::shared_ptr<Entity> e)
 		smallEnemy->cTransform = std::make_shared<cTransform>(pos, vel, 0);
 		smallEnemy->cShape = std::make_shared<cShape>(radius / 2, vertices, fill, outline, thickness / 2);
 		smallEnemy->cCollision = std::make_shared<cCollision>(radius / 2);
+		smallEnemy->cLifespan = std::make_shared<cLifespan>(m_enemyConfig.L);
 	}
 }
 void Game::spawnBullet(std::shared_ptr<Entity> entity, const Vec2& target)
@@ -267,19 +271,27 @@ void Game::sCollision()
 			e->destroy();
 			spawnPlayer();
 		}
+
+		for (auto e : m_entities.getEntities("small"))
+		{
+			if (m_player->cTransform->pos.dist(e->cTransform->pos) < (m_player->cCollision->radius + e->cCollision->radius))
+			{
+				m_player->destroy();
+				e->destroy();
+				spawnPlayer();
+			}
+
+			for (auto& b : m_entities.getEntities("bullet"))
+			{
+				if (b->cTransform->pos.dist(e->cTransform->pos) < (b->cCollision->radius + e->cCollision->radius))
+				{
+					b->destroy();
+					e->destroy();
+
+				}
+			}
+		}
 	}
-
-	//std::cout << m_entities.getEntities().size() << std::endl;
-	//for(auto b : m_entities.getEntities("bullet"))
-	//	for (auto e : m_entities.getEntities("enemy"))
-	//	{
-	//		if (b->cTransform->pos.dist(e->cTransform->pos) < (b->cCollision->radius + e->cCollision->radius))
-	//		{
-	//			b->destroy();
-	//			e->destroy();
-	//		}
-
-	//	}
 }
 
 void Game::sUserInput()
@@ -386,7 +398,7 @@ void Game::sMovement()
 
 	for (auto& e : m_entities.getEntities())
 	{
-		if(e->tag() == "enemy")
+		if(e->tag() == "enemy" || e->tag() == "samll")
 			e->cTransform->pos += e->cTransform->vel * m_sWeaponMultiplier;
 		else
 			e->cTransform->pos += e->cTransform->vel;
@@ -400,9 +412,14 @@ void Game::sLifespan()
 	// for all entities
 	for (auto& e : m_entities.getEntities())
 	{
-		if (!e->cLifespan) continue;
-		if (e->cLifespan->remaining > 0) { e->cLifespan->remaining -= 1; }
-		else { e->destroy(); }
+		if (!e->cLifespan) 
+			continue;
+
+		if (e->cLifespan->remaining > 0) 
+			e->cLifespan->remaining -= 1;
+
+		else 
+			e->destroy();
 
 		if (e->isActive())
 		{
