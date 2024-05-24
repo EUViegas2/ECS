@@ -96,7 +96,8 @@ void Game::run()
 				sEnemySpawner();
 		}
 		sUserInput();
-		sRender();	
+		sRender();
+		std::cout << m_score << std::endl;
 		if (m_sWeaponActive)
 			spawnSpecialWeapon();
 	}
@@ -135,6 +136,8 @@ void Game::spawnEnemy()
 			sf::Color(rand() % 255, rand() % 255, rand() % 255),
 			sf::Color(m_enemyConfig.OR, m_enemyConfig.OG, m_enemyConfig.OB),
 			m_enemyConfig.OT);
+
+		entity->cScore = std::make_shared<cScore>(entity->cShape->circle.getPointCount());
 
 		entity->cCollision = std::make_shared<cCollision>(m_enemyConfig.CR);
 		//entity->cLifespan = std::make_shared<cLifespan>(m_enemyConfig.L*2);
@@ -258,6 +261,7 @@ void Game::sCollision()
 		{
 			if (b->cTransform->pos.dist(e->cTransform->pos) < (b->cCollision->radius + e->cCollision->radius))
 			{
+				m_score += e->cScore->score;
 				b->destroy();
 				e->destroy();
 				spawnSmallEnemies(e);
@@ -267,6 +271,8 @@ void Game::sCollision()
 		//enemy-player
 		if (m_player->cTransform->pos.dist(e->cTransform->pos) < (m_player->cCollision->radius + e->cCollision->radius))
 		{
+			
+			m_score = 0;
 			m_player->destroy();
 			e->destroy();
 			spawnPlayer();
@@ -276,6 +282,7 @@ void Game::sCollision()
 		{
 			if (m_player->cTransform->pos.dist(e->cTransform->pos) < (m_player->cCollision->radius + e->cCollision->radius))
 			{
+				m_score = 0;
 				m_player->destroy();
 				e->destroy();
 				spawnPlayer();
@@ -285,6 +292,7 @@ void Game::sCollision()
 			{
 				if (b->cTransform->pos.dist(e->cTransform->pos) < (b->cCollision->radius + e->cCollision->radius))
 				{
+					m_score += 1;
 					b->destroy();
 					e->destroy();
 
