@@ -87,11 +87,13 @@ void Game::run()
 		if (!m_paused)
 		{
 			m_entities.update();
-			sEnemySpawner();
 			sCollision();
 			sLifespan();
 			sMovement();
 			m_currentFrame++;
+
+			if(!m_sWeaponActive)
+				sEnemySpawner();
 		}
 		sUserInput();
 		sRender();	
@@ -183,20 +185,13 @@ void Game::spawnSpecialWeapon()
 	{
 		m_weaponCounter = m_currentFrame;
 		m_sWeaponActive = true;
+		m_sWeaponMultiplier = false;
 	}
-	else
+	else if (m_currentFrame == m_weaponCounter + 50)
 	{
-		for (auto e : m_entities.getEntities("enemy"))
-		{
-			e->cTransform->vel *= 0;
-
-			if (m_currentFrame == m_weaponCounter + 20)
-			{
-				int speed = rand() % (int)(m_enemyConfig.SMAX - m_enemyConfig.SMIN) + m_enemyConfig.SMIN;
-				e->cTransform->vel = Vec2(cosf((rand() % 1000) / 500.0f * 3.14159f), sinf((rand() % 1000) / 500.0f * 3.14159f)) * speed;
 				m_sWeaponActive = false;
-			}
-		}
+				m_sWeaponMultiplier = true;
+				
 	}
 }
 void Game::sEnemySpawner()
@@ -221,16 +216,13 @@ void Game::sCollision()
 		m_player->cTransform->pos.y = m_window.getSize().y - m_player->cCollision->radius;
 
 	//enemy - bounds collision
-	std::cout << "This is befor forloop \0";
 	for (auto& e : m_entities.getEntities("enemy"))
 	{
-		std::cout << "this is the forloop" << std::endl;
 		if (
 			(e->cTransform->pos.x < e->cCollision->radius && e->cTransform->vel.x < 0) ||
 			(e->cTransform->pos.x > m_window.getSize().x - e->cCollision->radius && e->cTransform->vel.x > 0)
 			)
 		{
-			std::cout << "this is the 1st if \0";
 			e->cTransform->vel.x *= -1;
 		}
 
@@ -378,7 +370,10 @@ void Game::sMovement()
 
 	for (auto& e : m_entities.getEntities())
 	{
-		e->cTransform->pos += e->cTransform->vel;
+		if(e->tag() == "enemy")
+			e->cTransform->pos += e->cTransform->vel * m_sWeaponMultiplier;
+		else
+			e->cTransform->pos += e->cTransform->vel;
 	}
 }
 
