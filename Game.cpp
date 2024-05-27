@@ -107,6 +107,7 @@ void Game::run()
 			if(!m_sWeaponActive)
 				sEnemySpawner();
 		}
+		updateWeaponState();
 		sUserInput();
 		sRender();
 		std::cout << m_score << std::endl;
@@ -118,6 +119,12 @@ void Game::run()
 }
 void Game::setPaused(bool paused)
 {
+}
+void Game::updateWeaponState()
+{
+	if(m_lastSpecialSpawnTime<m_rectOutline.getSize().x)
+		m_lastSpecialSpawnTime += 1;
+	m_rectFill.setSize(sf::Vector2f(m_lastSpecialSpawnTime, m_fontConfig.S));
 }
 void Game::loadFont()
 {
@@ -432,6 +439,8 @@ void Game::sRender()
 		e->cShape->circle.setRotation(e->cTransform->angle);
 		m_window.draw(e->cShape->circle);
 	}
+	m_window.draw(m_rectOutline);
+	m_window.draw(m_rectFill);
 
 	m_window.draw(m_text);
 	m_window.display();

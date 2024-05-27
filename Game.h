@@ -45,6 +45,7 @@ class Game
 	int						m_currentFrame			{ 0 };
 	int						m_lastEnemySpawnTime	{ 0 };
 	int						m_lastBulletSpawnTime	{ 0 };
+	int						m_lastSpecialSpawnTime	{ 0 };
 	int						m_weaponCounter			{ 0 };
 
 
@@ -68,6 +69,7 @@ class Game
 	void sMovement();
 	void sLifespan();
 
+	void updateWeaponState();
 	void loadFont();
 	void updateScore(std::shared_ptr<Entity> entity);
 	void showScore();
