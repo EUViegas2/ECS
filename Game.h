@@ -37,6 +37,8 @@ class Game
 	WindowConfig			m_windowConfig;
 	FontConfig				m_fontConfig;
 	sf::Clock				m_deltaClock;
+	sf::RectangleShape		m_rectFill;
+	sf::RectangleShape		m_rectOutline;
 
 	int						m_score					{ 0 };
 	int						m_highScore				{ 0 };
@@ -44,6 +46,7 @@ class Game
 	int						m_lastEnemySpawnTime	{ 0 };
 	int						m_lastBulletSpawnTime	{ 0 };
 	int						m_weaponCounter			{ 0 };
+
 
 	bool					m_paused				{ false };
 	bool					m_running				{ true };

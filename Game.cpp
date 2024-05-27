@@ -76,6 +76,16 @@ void Game::init(const std::string& path)
 	m_window.create(sf::VideoMode(m_windowConfig.W, m_windowConfig.H), "Assignment 2");
 	m_window.setFramerateLimit(m_windowConfig.FL);
 
+	//weapon bar
+	m_rectOutline.setSize(sf::Vector2f(m_fontConfig.S * 8, m_fontConfig.S));
+	m_rectFill.setSize(sf::Vector2f(0, m_fontConfig.S));
+	m_rectOutline.setFillColor(sf::Color::Transparent);
+	m_rectOutline.setOutlineColor(sf::Color::White);
+	m_rectOutline.setOutlineThickness(2);
+	m_rectOutline.setPosition(5, (m_fontConfig.S + 5) * 2);
+	m_rectFill.setFillColor(sf::Color::Red);
+	m_rectFill.setPosition(5, (m_fontConfig.S + 5) * 2);
+
 	spawnPlayer();
 	loadFont();
 }
