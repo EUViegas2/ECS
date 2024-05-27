@@ -65,6 +65,10 @@ class Game
 	void sMovement();
 	void sLifespan();
 
+	void loadFont();
+	void updateScore(std::shared_ptr<Entity> entity);
+	void showScore();
+	void showHighScore();
 	void spawnPlayer();
 	void spawnEnemy();
 	void spawnSmallEnemies(std::shared_ptr<Entity> e);

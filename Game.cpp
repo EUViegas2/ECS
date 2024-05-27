@@ -77,6 +77,7 @@ void Game::init(const std::string& path)
 	m_window.setFramerateLimit(m_windowConfig.FL);
 
 	spawnPlayer();
+	loadFont();
 }
 void Game::run()
 {
@@ -90,6 +91,7 @@ void Game::run()
 			sCollision();
 			sLifespan();
 			sMovement();
+			showScore();
 			m_currentFrame++;
 
 			if(!m_sWeaponActive)
@@ -100,10 +102,46 @@ void Game::run()
 		std::cout << m_score << std::endl;
 		if (m_sWeaponActive)
 			spawnSpecialWeapon();
+		if (m_paused)
+			showHighScore();
 	}
 }
 void Game::setPaused(bool paused)
 {
+}
+void Game::loadFont()
+{
+	if (!m_font.loadFromFile(m_fontConfig.F))
+	{
+		std::cerr << "Could not Load Font!\n";
+		exit(-1);
+	}
+
+	m_text.setFont(m_font);
+	m_text.setString("Score :" + std::to_string(m_score));
+	m_text.setCharacterSize(m_fontConfig.S);
+	m_text.setFillColor(sf::Color(m_fontConfig.R, m_fontConfig.G, m_fontConfig.B));
+	m_text.setPosition(5, 5);
+
+
+}
+void Game::updateScore(std::shared_ptr<Entity> entity)
+{
+	if (!entity)
+	{
+		if (m_score > m_highScore) { m_highScore = m_score; }
+		m_score = 0;
+	}
+	else 	m_score += entity->cScore->score;
+
+}
+void Game::showScore()
+{
+	m_text.setString("Score: " + std::to_string(m_score));
+}
+void Game::showHighScore()
+{
+	m_text.setString("HighScore : " + std::to_string(m_highScore));
 }
 void Game::spawnPlayer()
 {
@@ -169,6 +207,7 @@ void Game::spawnSmallEnemies(std::shared_ptr<Entity> e)
 		smallEnemy->cShape = std::make_shared<cShape>(radius / 2, vertices, fill, outline, thickness / 2);
 		smallEnemy->cCollision = std::make_shared<cCollision>(radius / 2);
 		smallEnemy->cLifespan = std::make_shared<cLifespan>(m_enemyConfig.L);
+		smallEnemy->cScore = std::make_shared<cScore>(1);
 	}
 }
 void Game::spawnBullet(std::shared_ptr<Entity> entity, const Vec2& target)
@@ -236,7 +275,7 @@ void Game::sCollision()
 	if (m_player->cTransform->pos.y > m_window.getSize().y - m_player->cCollision->radius)
 		m_player->cTransform->pos.y = m_window.getSize().y - m_player->cCollision->radius;
 
-	//enemy - bounds collision
+	//enemy collision
 	for (auto& e : m_entities.getEntities("enemy"))
 	{
 		if (
@@ -264,6 +303,8 @@ void Game::sCollision()
 				b->destroy();
 				e->destroy();
 				spawnSmallEnemies(e);
+
+				updateScore(e);
 			}
 		}
 
@@ -275,6 +316,7 @@ void Game::sCollision()
 			m_player->destroy();
 			e->destroy();
 			spawnPlayer();
+			updateScore(nullptr);
 		}
 
 		for (auto e : m_entities.getEntities("small"))
@@ -293,9 +335,10 @@ void Game::sCollision()
 			{
 				if (b->cTransform->pos.dist(e->cTransform->pos) < (b->cCollision->radius + e->cCollision->radius))
 				{
-					m_score += 1;
+					m_score += e->cScore->score;
 					b->destroy();
 					e->destroy();
+					updateScore(e);
 
 				}
 			}
@@ -379,6 +422,8 @@ void Game::sRender()
 		e->cShape->circle.setRotation(e->cTransform->angle);
 		m_window.draw(e->cShape->circle);
 	}
+
+	m_window.draw(m_text);
 	m_window.display();
 }
 void Game::sMovement()
