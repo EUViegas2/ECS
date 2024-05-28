@@ -1,15 +1,20 @@
 #pragma once
 
 #include "Entity.h"
-#include "EntityManager.h"
+#include "Scene.h"
+
+#include <memory>
 
 #include<SFML/Graphics.hpp>
+
+typedef std::map<std::string, std::shared_ptr<Scene>> SceneMap;
 
 struct PlayerConfig { int SR, CR, FR, FG, FB, OR, OG, OB, OT, V; float S; };
 struct EnemyConfig { int SR, CR, OR, OG, OB, OT, VMIN, VMAX, L, SI; float SMIN, SMAX; };
 struct BulletConfig { int SR, CR, FR, FG, FB, OR, OG, OB, OT, V, L; float S; };
 struct WindowConfig { int W, H, FL, FS; };
 struct FontConfig { std::string F; int S, R, G, B; };
+
 /*
 SR Shape Radius
 CR Colision Radius
@@ -40,16 +45,23 @@ class Game
 	sf::RectangleShape		m_rectFill;
 	sf::RectangleShape		m_rectOutline;
 
+	//Scenes
+	std::string				m_currentMap;
+	SceneMap				m_sceneMap;
+
+	std::shared_ptr<Scene> currentScene();
+
 	int						m_score					{ 0 };
 	int						m_highScore				{ 0 };
-	int						m_currentFrame			{ 0 };
+
+
+
 	int						m_lastEnemySpawnTime	{ 0 };
 	int						m_lastBulletSpawnTime	{ 0 };
 	int						m_lastSpecialSpawnTime	{ 0 };
 	int						m_weaponCounter			{ 0 };
 
 
-	bool					m_paused				{ false };
 	bool					m_running				{ true };
 	bool					m_sWeaponActive			{ false };
 	bool					m_sWeaponMultiplier		{ true };
@@ -84,6 +96,13 @@ public:
 
 	Game(const std::string& config);
 
+	void changeScene(const std::string& sceneName, std::shared_ptr<Scene> scene, bool endCurrentScene = false);
+
+
 	void run();
+	void quit();
+	bool isRunning();
+
+
 };
 
