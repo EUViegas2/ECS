@@ -3,17 +3,14 @@
 #include "Entity.h"
 #include "Scene.h"
 
+#include<fstream>
+#include<iostream>
 #include <memory>
 
 #include<SFML/Graphics.hpp>
 
 typedef std::map<std::string, std::shared_ptr<Scene>> SceneMap;
-
-struct PlayerConfig { int SR, CR, FR, FG, FB, OR, OG, OB, OT, V; float S; };
-struct EnemyConfig { int SR, CR, OR, OG, OB, OT, VMIN, VMAX, L, SI; float SMIN, SMAX; };
-struct BulletConfig { int SR, CR, FR, FG, FB, OR, OG, OB, OT, V, L; float S; };
 struct WindowConfig { int W, H, FL, FS; };
-struct FontConfig { std::string F; int S, R, G, B; };
 
 /*
 SR Shape Radius
@@ -32,77 +29,31 @@ SI Spawn Interval
 */
 class Game
 {
-	sf::RenderWindow		m_window;	//the window to be drawn
-	EntityManager			m_entities;	//vector of entities to maintain
-	sf::Font				m_font;		//the font to use
-	sf::Text				m_text;		//the score text to be drawn on screen
-	PlayerConfig			m_playerConfig;
-	EnemyConfig				m_enemyConfig;
-	BulletConfig			m_bulletConfig;
+
 	WindowConfig			m_windowConfig;
-	FontConfig				m_fontConfig;
+	sf::RenderWindow		m_window;	//the window to be drawn
 	sf::Clock				m_deltaClock;
-	sf::RectangleShape		m_rectFill;
-	sf::RectangleShape		m_rectOutline;
 
 	//Scenes
 	std::string				m_currentMap;
+	std::string				m_currentScene;
 	SceneMap				m_sceneMap;
 
 	std::shared_ptr<Scene> currentScene();
 
-	int						m_score					{ 0 };
-	int						m_highScore				{ 0 };
-
-
-
-	int						m_lastEnemySpawnTime	{ 0 };
-	int						m_lastBulletSpawnTime	{ 0 };
-	int						m_lastSpecialSpawnTime	{ 0 };
-	int						m_weaponCounter			{ 0 };
-
-
 	bool					m_running				{ true };
-	bool					m_sWeaponActive			{ false };
-	bool					m_sWeaponMultiplier		{ true };
-
-
-	std::shared_ptr<Entity> m_player;
-
-
-
 	void init(const std::string& path);
-	void setPaused(bool paused);
-
-	void sEnemySpawner();
-	void sCollision();
 	void sUserInput();
-	void sRender();
-	void sMovement();
-	void sLifespan();
-
-	void updateWeaponState();
-	void loadFont();
-	void updateScore(std::shared_ptr<Entity> entity);
-	void showScore();
-	void showHighScore();
-	void spawnPlayer();
-	void spawnEnemy();
-	void spawnSmallEnemies(std::shared_ptr<Entity> e);
-	void spawnBullet(std::shared_ptr<Entity> entity, const Vec2& target);
-	void spawnSpecialWeapon();
-
+	void update();
 public:
 
 	Game(const std::string& config);
-
 	void changeScene(const std::string& sceneName, std::shared_ptr<Scene> scene, bool endCurrentScene = false);
-
-
 	void run();
 	void quit();
 	bool isRunning();
 
+	sf::RenderWindow& window()
 
 };
 
