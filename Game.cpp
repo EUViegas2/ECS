@@ -6,7 +6,6 @@ Game::Game(const std::string& config)
 {
 	init(config);
 }
-
 void Game::init(const std::string& path)
 {
 	std::ifstream fin(path);
@@ -91,8 +90,6 @@ void Game::init(const std::string& path)
 }
 void Game::run()
 {
-
-
 	while (m_running)
 	{
 		if (!m_paused)
@@ -103,14 +100,12 @@ void Game::run()
 			sMovement();
 			showScore();
 			m_currentFrame++;
-
 			if(!m_sWeaponActive)
 				sEnemySpawner();
 		}
 		updateWeaponState();
 		sUserInput();
 		sRender();
-		std::cout << m_score << std::endl;
 		if (m_sWeaponActive)
 			spawnSpecialWeapon();
 		if (m_paused)
@@ -169,7 +164,6 @@ void Game::spawnPlayer()
 	entity->cInput = std::make_shared<cInput>();
 	entity->cCollision = std::make_shared<cCollision>(m_playerConfig.CR);
 	m_player = entity;
-	//std::cout << m_entities.getEntities().size() << std::endl;
 }
 void Game::spawnEnemy()
 {
@@ -203,7 +197,6 @@ void Game::spawnEnemy()
 		m_lastEnemySpawnTime = m_currentFrame;
 	}
 
-	std::cout << m_entities.getEntities().size() << std::endl;
 }
 void Game::spawnSmallEnemies(std::shared_ptr<Entity> e)
 {
