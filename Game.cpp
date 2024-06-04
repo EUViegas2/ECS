@@ -494,4 +494,3 @@ void Game::sLifespan()
 	//	   if it has lifespan and its time is up
 	//		  destroy the entity
 }
-

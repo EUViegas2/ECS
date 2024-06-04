@@ -2,8 +2,6 @@
 #include "Vec2.h"
 #include<SFML/Graphics.hpp>
 
-
-
 class cTransform
 {
 public:
@@ -16,7 +14,6 @@ public:
 
 
 };
-
 class cShape
 {
 public:
@@ -33,7 +30,6 @@ public:
 	}
 
 };
-
 class cCollision
 {
 public:
@@ -41,7 +37,6 @@ public:
 	cCollision(float r)
 		: radius(r) {}
 };
-
 class cScore
 {
 public:
@@ -49,7 +44,6 @@ public:
 	cScore(int s)
 		: score(s) {}
 };
-
 class cLifespan
 {
 public:
@@ -58,7 +52,6 @@ public:
 	cLifespan(int total)
 		:remaining(total), total(total) {}
 };
-
 class cInput
 {
 public:
